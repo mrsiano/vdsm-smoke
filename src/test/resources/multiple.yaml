@@ -1,0 +1,4 @@
+scenarios: First, Different
+properties:
+    propname: propvalue
+    propname2: propvalue2
