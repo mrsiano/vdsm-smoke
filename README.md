@@ -13,13 +13,21 @@ java -jar smoke-jar-with-dependencies.jar <options>
 Here are possible options:
 
  -f,--path <arg>                Path to a configuration yaml file for the scenario we want to test
+ 
  -h,--host <arg>                Host where vdsm is running
+ 
  -p,--port <arg>                Port on which vdsm is listening
+ 
  -l,--location <arg>            ssl configuration for either engine or vdsm so we can reuse certificates (based on -s)
+ 
  -m,--metric <arg>              A directory where scenario runtime metrics are stored as csv file
+ 
  -n,--number-of-threads <arg>   Specifies number of concurrent exceutions for a scenario
+ 
  -r,--repeat <arg>              Specifies how many times repeat a scenario
+ 
  -s,--secure <arg>              Specify whether to use engine or vdsm config to load certificates
+ 
  -t,--time <arg>                Specify for how long the scenario should be run in minutes
  
  In order to understand how performant vdsm is with current scenario we use dropwizard metrics to collect response times
