@@ -8,10 +8,13 @@ we can chain scenarios to cover a use case like create and later remove a virtua
 
 After using maven to build far jar we can run it with:
 
+```
 java -jar smoke-jar-with-dependencies.jar <options>
+```
 
 Here are possible options:
 
+```
  -f,--path <arg>                Path to a configuration yaml file for the scenario we want to test
  
  -h,--host <arg>                Host where vdsm is running
@@ -29,6 +32,7 @@ Here are possible options:
  -s,--secure <arg>              Specify whether to use engine or vdsm config to load certificates
  
  -t,--time <arg>                Specify for how long the scenario should be run in minutes
+ ```
  
  In order to understand how performant vdsm is with current scenario we use dropwizard metrics to collect response times
  for each verb invocation. It is very easy to change what metrics can be collected and how we want to store them.
