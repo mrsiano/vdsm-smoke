@@ -1,0 +1,4 @@
+scenarios: MonitorCycle, GetVmStats
+properties:
+    ratio: 3
+    interval: 3

@@ -1,0 +1,3 @@
+scenario: MonitorCycle
+properties:
+    interval: 3

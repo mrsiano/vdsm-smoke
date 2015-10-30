@@ -1,5 +1,6 @@
 package org.ovirt.vdsm.test.scenarios;
 
+import java.util.List;
 import java.util.Map;
 
 import org.ovirt.vdsm.jsonrpc.client.JsonRpcRequest;
@@ -13,12 +14,12 @@ public class Different extends Scenario {
     }
 
     @Override
-    public JsonRpcRequest getRequest() {
+    public List<JsonRpcRequest> getRequests() {
         return null;
     }
 
     @Override
-    public JsonRpcRequest responseToRequest(JsonRpcResponse response) {
+    public List<JsonRpcRequest> responsesToRequests(List<JsonRpcResponse> response) {
         return null;
     }
 

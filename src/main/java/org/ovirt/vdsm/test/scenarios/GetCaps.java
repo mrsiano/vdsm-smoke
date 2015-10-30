@@ -1,5 +1,7 @@
 package org.ovirt.vdsm.test.scenarios;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.ovirt.vdsm.jsonrpc.client.JsonRpcRequest;
@@ -14,12 +16,12 @@ public class GetCaps extends Scenario {
     }
 
     @Override
-    public JsonRpcRequest getRequest() {
-        return new RequestBuilder("Host.getCapabilities").build();
+    public List<JsonRpcRequest> getRequests() {
+        return Arrays.asList(new RequestBuilder("Host.getCapabilities").build());
     }
 
     @Override
-    public JsonRpcRequest responseToRequest(JsonRpcResponse response) throws ScenarioException {
+    public List<JsonRpcRequest> responsesToRequests(List<JsonRpcResponse> response) throws ScenarioException {
         return null;
     }
 

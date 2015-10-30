@@ -1,5 +1,6 @@
 package org.ovirt.vdsm.test.scenarios;
 
+import java.util.List;
 import java.util.Map;
 
 import org.ovirt.vdsm.jsonrpc.client.JsonRpcRequest;
@@ -28,7 +29,7 @@ public abstract class Scenario {
         return this.next != null;
     }
 
-    public abstract JsonRpcRequest getRequest();
+    public abstract List<JsonRpcRequest> getRequests();
 
-    public abstract JsonRpcRequest responseToRequest(JsonRpcResponse response) throws ScenarioException;
+    public abstract List<JsonRpcRequest> responsesToRequests(List<JsonRpcResponse> response) throws ScenarioException;
 }

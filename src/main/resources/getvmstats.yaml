@@ -1,0 +1,3 @@
+scenario: GetVmStats
+properties:
+    ratio: 3

@@ -36,7 +36,7 @@ public class ScenarioLoader {
             Scenario next = null;
             for (String name : names) {
                 Map map = this.loadConfig(this.basePath);
-                Scenario scenario = loadScenario(name.trim(), map);
+                Scenario scenario = loadScenario(name.trim(), (Map) map.get(PROPERTIES));
                 if (base == null) {
                     base = next = scenario;
                 } else {

@@ -1,6 +1,7 @@
 package org.ovirt.vdsm.test.scenarios;
 
 import java.security.GeneralSecurityException;
+import java.util.Map;
 import java.util.Random;
 
 public final class Utils {
@@ -36,5 +37,29 @@ public final class Utils {
             value = value.substring(0, len - 1);
         }
         return value;
+    }
+
+    public static boolean isEmpty(String value) {
+        return value == null || "".equals(value.trim());
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static Integer getInt(Map props, String name) {
+        Object object = props.get(name);
+        if (Integer.class.isInstance(object)) {
+            return (Integer) object;
+        } else if (String.class.isInstance(object)) {
+            String interval = (String) props.get(name);
+            if (isEmpty(interval)) {
+                throw new IllegalArgumentException("Missing interval value");
+            }
+            try {
+                return Integer.parseInt(interval);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Value of interval is not a number");
+            }
+        } else {
+            throw new IllegalArgumentException("Not recognized type for: " + name);
+        }
     }
 }

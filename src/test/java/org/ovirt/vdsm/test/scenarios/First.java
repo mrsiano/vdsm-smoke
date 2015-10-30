@@ -1,5 +1,6 @@
 package org.ovirt.vdsm.test.scenarios;
 
+import java.util.List;
 import java.util.Map;
 
 import org.ovirt.vdsm.jsonrpc.client.JsonRpcRequest;
@@ -13,13 +14,13 @@ public class First extends Scenario {
     }
 
     @Override
-    public JsonRpcRequest getRequest() {
+    public List<JsonRpcRequest> getRequests() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public JsonRpcRequest responseToRequest(JsonRpcResponse response) {
+    public List<JsonRpcRequest> responsesToRequests(List<JsonRpcResponse> response) {
         // TODO Auto-generated method stub
         return null;
     }

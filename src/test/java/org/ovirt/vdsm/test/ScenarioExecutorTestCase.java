@@ -10,6 +10,8 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -31,17 +33,18 @@ public class ScenarioExecutorTestCase {
 
     @Test
     public void testMultipleScenarios()
-            throws ClientConnectionException, InterruptedException, ExecutionException, TimeoutException, ScenarioException {
+            throws ClientConnectionException, InterruptedException, ExecutionException, TimeoutException,
+            ScenarioException {
         JsonNode node = mock(JsonNode.class);
-        JsonRpcResponse response = new JsonRpcResponse(node, null, node);
+        List<JsonRpcResponse> response = Arrays.asList(new JsonRpcResponse(node, null, node));
         ScenarioExecutor executor = prepareExecutor(response);
 
-        JsonRpcRequest request = mock(JsonRpcRequest.class);
+        List<JsonRpcRequest> request = Arrays.asList(mock(JsonRpcRequest.class));
         Scenario first = mock(Scenario.class);
-        when(first.getRequest()).thenReturn(request);
+        when(first.getRequests()).thenReturn(request);
         when(first.hasNext()).thenReturn(Boolean.TRUE);
         Scenario different = mock(Scenario.class);
-        when(different.responseToRequest(response)).thenReturn(request);
+        when(different.responsesToRequests(response)).thenReturn(request);
         when(different.hasNext()).thenReturn(Boolean.FALSE);
         when(first.getNext()).thenReturn(different);
 
@@ -57,23 +60,24 @@ public class ScenarioExecutorTestCase {
             }
         }
 
-        verify(first, times(1)).getRequest();
-        verify(first, times(0)).responseToRequest(response);
+        verify(first, times(1)).getRequests();
+        verify(first, times(0)).responsesToRequests(response);
 
-        verify(different, times(0)).getRequest();
-        verify(different, times(1)).responseToRequest(response);
+        verify(different, times(0)).getRequests();
+        verify(different, times(1)).responsesToRequests(response);
     }
 
     @Test
     public void testMultipleRepeats()
-            throws InterruptedException, ExecutionException, TimeoutException, ClientConnectionException, ScenarioException {
+            throws InterruptedException, ExecutionException, TimeoutException, ClientConnectionException,
+            ScenarioException {
         JsonNode node = mock(JsonNode.class);
-        JsonRpcResponse response = new JsonRpcResponse(node, null, node);
+        List<JsonRpcResponse> response = Arrays.asList(new JsonRpcResponse(node, null, node));
         ScenarioExecutor executor = prepareExecutor(response);
 
-        JsonRpcRequest request = mock(JsonRpcRequest.class);
+        List<JsonRpcRequest> request = Arrays.asList(mock(JsonRpcRequest.class));
         Scenario scenario = mock(Scenario.class);
-        when(scenario.getRequest()).thenReturn(request);
+        when(scenario.getRequests()).thenReturn(request);
         when(scenario.hasNext()).thenReturn(Boolean.FALSE);
 
         File temp = null;
@@ -88,20 +92,21 @@ public class ScenarioExecutorTestCase {
             }
         }
 
-        verify(scenario, times(10)).getRequest();
-        verify(scenario, times(0)).responseToRequest(response);
+        verify(scenario, times(10)).getRequests();
+        verify(scenario, times(0)).responsesToRequests(response);
     }
 
     @Test
     public void testMultipleThreads()
-            throws InterruptedException, ExecutionException, TimeoutException, ClientConnectionException, ScenarioException {
+            throws InterruptedException, ExecutionException, TimeoutException, ClientConnectionException,
+            ScenarioException {
         JsonNode node = mock(JsonNode.class);
-        JsonRpcResponse response = new JsonRpcResponse(node, null, node);
+        List<JsonRpcResponse> response = Arrays.asList(new JsonRpcResponse(node, null, node));
         ScenarioExecutor executor = prepareExecutor(response);
 
-        JsonRpcRequest request = mock(JsonRpcRequest.class);
+        List<JsonRpcRequest> request = Arrays.asList(mock(JsonRpcRequest.class));
         Scenario scenario = mock(Scenario.class);
-        when(scenario.getRequest()).thenReturn(request);
+        when(scenario.getRequests()).thenReturn(request);
         when(scenario.hasNext()).thenReturn(Boolean.FALSE);
 
         File temp = null;
@@ -114,11 +119,11 @@ public class ScenarioExecutorTestCase {
             }
         }
 
-        verify(scenario, times(10)).getRequest();
-        verify(scenario, times(0)).responseToRequest(response);
+        verify(scenario, times(10)).getRequests();
+        verify(scenario, times(0)).responsesToRequests(response);
     }
 
-    private ScenarioExecutor prepareExecutor(JsonRpcResponse response)
+    private ScenarioExecutor prepareExecutor(List<JsonRpcResponse> response)
             throws InterruptedException, ExecutionException, TimeoutException, ClientConnectionException {
         ManagerProvider provider = mock(ManagerProvider.class);
         JsonRpcClient client = mock(JsonRpcClient.class);
@@ -126,9 +131,9 @@ public class ScenarioExecutorTestCase {
         when(reactorClient.isInInit()).thenReturn(Boolean.TRUE);
         when(reactorClient.isOpen()).thenReturn(Boolean.TRUE);
         when(client.getClient()).thenReturn(reactorClient);
-        Future<JsonRpcResponse> future = mock(Future.class);
+        Future<List<JsonRpcResponse>> future = mock(Future.class);
         when(future.get(ScenarioCallable.TIMEOUT, TimeUnit.SECONDS)).thenReturn(response);
-        when(client.call(any(JsonRpcRequest.class))).thenReturn(future);
+        when(client.batchCall(any(List.class))).thenReturn(future);
         ScenarioExecutor executor = new ScenarioExecutor("localhost", 54321, provider);
         setField(executor, "jsonClient", client);
         return executor;

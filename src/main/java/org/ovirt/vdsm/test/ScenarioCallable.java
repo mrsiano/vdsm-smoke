@@ -3,6 +3,7 @@ package org.ovirt.vdsm.test;
 import static com.codahale.metrics.MetricRegistry.*;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -49,7 +50,7 @@ public class ScenarioCallable implements Callable<Object> {
         try {
             final Timer timer = registry.timer(name(scenario.getClass(), "requests"));
             for (int i = 0; i < this.times; i++) {
-                JsonRpcRequest request = scenario.getRequest();
+                List<JsonRpcRequest> request = scenario.getRequests();
                 this.runScenario(request, this.scenario, timer);
             }
             this.reporter.report();
@@ -59,19 +60,22 @@ public class ScenarioCallable implements Callable<Object> {
         return null;
     }
 
-    private void runScenario(JsonRpcRequest request, Scenario scenario, Timer timer) throws ScenarioException {
+    private void runScenario(List<JsonRpcRequest> requests, Scenario scenario, Timer timer) throws ScenarioException {
         try {
+            if (requests == null || requests.isEmpty()) {
+                return;
+            }
             final Timer.Context context = timer.time();
-            JsonRpcResponse response = null;
+            List<JsonRpcResponse> responses = null;
             try {
-                Future<JsonRpcResponse> future = this.client.call(request);
-                response = future.get(TIMEOUT, TimeUnit.SECONDS);
+                Future<List<JsonRpcResponse>> future = this.client.batchCall(requests);
+                responses = future.get(TIMEOUT, TimeUnit.SECONDS);
             } finally {
                 context.stop();
             }
             if (scenario.hasNext()) {
                 Scenario next = scenario.getNext();
-                this.runScenario(next.responseToRequest(response), next, timer);
+                this.runScenario(next.responsesToRequests(responses), next, timer);
             }
         } catch (ClientConnectionException | TimeoutException e) {
             System.err.println("Connectivity issue occured");
